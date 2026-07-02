@@ -1,36 +1,200 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏛️ CSC Connect
 
-## Getting Started
+CSC Connect is a Full Stack web application that helps citizens find nearby Common Service Centers (CSCs), book appointments, track application status, and access government services online. The platform also provides a dedicated admin dashboard for managing CSC centers, services, appointments, and users.
 
-First, run the development server:
+---
+
+## 🚀 Live Demo
+
+🔗 https://your-vercel-link.vercel.app
+
+---
+
+## 📸 Screenshots
+
+### 🏠 Home Page
+
+![Home](screenshots/home.png)
+
+### 📍 CSC Finder
+
+![CSC Finder](screenshots/csc-finder.png)
+
+### 📅 Appointment Booking
+
+![Appointment](screenshots/appointment.png)
+
+### 📊 Admin Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+---
+
+## ✨ Features
+
+- 🏠 Modern Landing Page
+- 🔐 Authentication with Clerk
+- 👤 Role-based Authentication
+- 📍 Find Nearby CSC Centers
+- 📅 Online Appointment Booking
+- 📄 Application Status Tracking
+- 📰 Latest Government Schemes
+- 📊 Admin Dashboard
+- 📈 Analytics Dashboard
+- 📱 Fully Responsive Design
+- 🌙 Modern UI
+- 📄 PDF Receipt Generation
+- 📧 Email Notifications
+- 📱 SMS Notifications
+- 🗺️ Google Maps Integration
+- ☁️ Cloud Image Upload
+- 🔍 SEO Friendly
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Shadcn UI
+- Framer Motion
+
+### Backend
+- Next.js API Routes
+- Prisma ORM
+- Zod Validation
+- React Query
+- Axios
+
+### Database
+- PostgreSQL
+- Prisma ORM
+
+### Authentication
+- Clerk Authentication
+
+### Maps & Location
+- Google Maps API
+
+### Notifications
+- Nodemailer
+- Twilio SMS
+
+### File & PDF
+- Cloudinary
+- PDF-Lib
+- QR Code
+
+### Charts
+- Recharts
+
+### Deployment
+- Vercel
+- GitHub
+
+---
+
+## 📂 Folder Structure
+
+```
+src
+ ├── app
+ ├── components
+ ├── lib
+ ├── prisma
+ ├── public
+ └── middleware.ts
+```
+
+---
+
+## ⚙️ Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/LatikaMan/csc-connect.git
+```
+
+Go to project folder
+
+```bash
+cd csc-connect
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Configure environment variables
+
+```env
+DATABASE_URL=
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+
+CLERK_SECRET_KEY=
+
+GOOGLE_MAPS_API_KEY=
+
+CLOUDINARY_CLOUD_NAME=
+
+TWILIO_ACCOUNT_SID=
+
+TWILIO_AUTH_TOKEN=
+```
+
+Generate Prisma Client
+
+```bash
+npx prisma generate
+```
+
+Run migrations
+
+```bash
+npx prisma migrate dev
+```
+
+Seed database
+
+```bash
+npx prisma db seed
+```
+
+Run project
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Future Improvements
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Online Payments
+- WhatsApp Notifications
+- Multi-language Support
+- AI Chat Assistant
+- CSC Owner Dashboard
+- Document Upload
+- Feedback System
+- Mobile App
+- PWA Support
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 👩‍💻 Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Latika Mandal**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+GitHub: https://github.com/LatikaMan
 
-## Deploy on Vercel
+LinkedIn: https://www.linkedin.com/in/latika-mandal-2ba209338/
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
