@@ -1,0 +1,307 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ───────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  CSC_ADMIN
+  CUSTOMER
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  RESCHEDULED
+}
+
+enum ApplicationStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  PROCESSING
+  APPROVED
+  COMPLETED
+  REJECTED
+}
+
+enum NotificationType {
+  EMAIL
+  SMS
+  WHATSAPP
+  PUSH
+}
+
+// ─── MODELS ──────────────────────────────────────────
+
+model User {
+  id            String    @id @default(uuid())
+  clerkId       String    @unique
+  name          String
+  email         String    @unique
+  phone         String?
+  avatar        String?
+  role          Role      @default(CUSTOMER)
+  isActive      Boolean   @default(true)
+  isDeleted     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  cscCenter     CSCCenter?
+  appointments  Appointment[]
+  applications  Application[]
+  reviews       Review[]
+  notifications Notification[]
+
+  @@index([email])
+  @@index([clerkId])
+  @@index([role])
+}
+
+model CSCCenter {
+  id            String    @id @default(uuid())
+  name          String
+  ownerId       String    @unique
+  owner         User      @relation(fields: [ownerId], references: [id])
+  address       String
+  city          String
+  district      String
+  state         String
+  pincode       String
+  latitude      Float
+  longitude     Float
+  phone         String
+  email         String?
+  whatsapp      String?
+  logo          String?
+  images        String[]
+  workingHours  Json
+  isActive      Boolean   @default(true)
+  isVerified    Boolean   @default(false)
+  isDeleted     Boolean   @default(false)
+  rating        Float     @default(0)
+  totalReviews  Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  services      CSCCenterService[]
+  appointments  Appointment[]
+  reviews       Review[]
+
+  @@index([city])
+  @@index([pincode])
+  @@index([latitude, longitude])
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  nameHindi   String?
+  icon        String
+  color       String
+  order       Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  services    Service[]
+}
+
+model Service {
+  id                String    @id @default(uuid())
+  categoryId        String
+  category          Category  @relation(fields: [categoryId], references: [id])
+  name              String
+  nameHindi         String?
+  slug              String    @unique
+  description       String
+  descriptionHindi  String?
+  eligibility       String?
+  fees              Float     @default(0)
+  processingDays    Int       @default(7)
+  icon              String?
+  image             String?
+  isActive          Boolean   @default(true)
+  isDeleted         Boolean   @default(false)
+  governmentUpdates String?
+  importantNotes    String?
+  faqs              Json?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  requiredDocuments RequiredDocument[]
+  appointments      Appointment[]
+  cscCenters        CSCCenterService[]
+
+  @@index([slug])
+  @@index([categoryId])
+}
+
+model RequiredDocument {
+  id          String    @id @default(uuid())
+  serviceId   String
+  service     Service   @relation(fields: [serviceId], references: [id])
+  name        String
+  nameHindi   String?
+  description String?
+  image       String?
+  isOptional  Boolean   @default(false)
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([serviceId])
+}
+
+model CSCCenterService {
+  id          String    @id @default(uuid())
+  cscId       String
+  cscCenter   CSCCenter @relation(fields: [cscId], references: [id])
+  serviceId   String
+  service     Service   @relation(fields: [serviceId], references: [id])
+  customFee   Float?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  @@unique([cscId, serviceId])
+}
+
+model Appointment {
+  id              String              @id @default(uuid())
+  appointmentNo   String              @unique
+  userId          String
+  user            User                @relation(fields: [userId], references: [id])
+  cscId           String
+  cscCenter       CSCCenter           @relation(fields: [cscId], references: [id])
+  serviceId       String
+  service         Service             @relation(fields: [serviceId], references: [id])
+  scheduledAt     DateTime
+  status          AppointmentStatus   @default(PENDING)
+  customerName    String
+  customerPhone   String
+  customerEmail   String?
+  documents       String[]
+  notes           String?
+  qrCode          String?
+  isDeleted       Boolean             @default(false)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  application     Application?
+
+  @@index([userId])
+  @@index([cscId])
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+model Application {
+  id              String              @id @default(uuid())
+  applicationNo   String              @unique
+  appointmentId   String              @unique
+  appointment     Appointment         @relation(fields: [appointmentId], references: [id])
+  userId          String
+  user            User                @relation(fields: [userId], references: [id])
+  status          ApplicationStatus   @default(SUBMITTED)
+  statusHistory   Json                @default("[]")
+  assignedStaff   String?
+  remarks         String?
+  completedAt     DateTime?
+  isDeleted       Boolean             @default(false)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([applicationNo])
+  @@index([userId])
+  @@index([status])
+}
+
+model Review {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  cscId       String
+  cscCenter   CSCCenter @relation(fields: [cscId], references: [id])
+  rating      Int
+  comment     String?
+  images      String[]
+  isApproved  Boolean   @default(false)
+  isDeleted   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, cscId])
+  @@index([cscId])
+}
+
+model Scheme {
+  id              String    @id @default(uuid())
+  title           String
+  titleHindi      String?
+  description     String
+  eligibility     String?
+  documents       String?
+  deadline        DateTime?
+  ministry        String?
+  image           String?
+  link            String?
+  isActive        Boolean   @default(true)
+  isDeleted       Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model News {
+  id          String    @id @default(uuid())
+  title       String
+  content     String
+  image       String?
+  category    String
+  isPublished Boolean   @default(false)
+  isDeleted   Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Gallery {
+  id          String    @id @default(uuid())
+  title       String
+  url         String
+  type        String    @default("IMAGE")
+  category    String?
+  isActive    Boolean   @default(true)
+  isDeleted   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Notification {
+  id        String            @id @default(uuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id])
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean           @default(false)
+  sentAt    DateTime?
+  createdAt DateTime          @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+model Setting {
+  id        String    @id @default(uuid())
+  key       String    @unique
+  value     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
