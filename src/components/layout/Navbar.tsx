@@ -2,7 +2,8 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Menu, X, MapPin } from 'lucide-react'
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { UserButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut } from '@clerk/nextjs/react'
 import { Button } from '@/components/ui/button'
 
 const navLinks = [
